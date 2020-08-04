@@ -1,0 +1,44 @@
+<h1>OSRS Proxy</h1>
+
+<fieldset>
+    <legend>Throttle Client -> Server</legend>
+
+    <label for="cs-duration">Duration (Seconds)</label><br>
+    <input type="number" value="30" id="cs-duration" name="cs-duration">
+    <br>
+
+    <button id="cs-click">Trigger Throttler</button>
+</fieldset>
+
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+<script>
+    $(function () {
+        $('#cs-click').click(function (event) {
+            event.preventDefault();
+
+            var self = $(this);
+            var duration = $('#cs-duration').val();
+
+            self.attr('disabled', 'disabled');
+            self.text('Waiting ' + duration + ' seconds..');
+
+            $.ajax('/api/v1/throttle/client-server', {
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    duration: duration
+                }
+            });
+
+            setTimeout(function () {
+                self.removeAttr('disabled');
+                self.text('Trigger Throttler');
+            }, (duration * 1000))
+        });
+    });
+</script>
